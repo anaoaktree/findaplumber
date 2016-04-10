@@ -38,7 +38,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'hello'
+    'filebrowser',
+    'oaktree.core',
+    'oaktree.profile',
+    'hello',
+
 )
 
 MIDDLEWARE_CLASSES = (
