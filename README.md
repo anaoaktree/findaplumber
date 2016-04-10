@@ -64,3 +64,7 @@ Merge with original asap
 ## Tools
 - Sphinx
 - Travis
+
+## TODO
+ - Testing
+ - Bootstrap and basic js libs, seo, icons, mixpanel, etc
