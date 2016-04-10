@@ -60,3 +60,7 @@ Merge with original asap
  - Javascript
  - generate forms and errors
  - logins and accounts
+
+## Tools
+- Sphinx
+- Travis
