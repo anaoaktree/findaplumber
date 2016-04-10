@@ -45,3 +45,6 @@ For more information about using Python on Heroku, see these Dev Center articles
 
 ## Instruction on Sphinx
 http://gisellezeno.com/tutorials/sphinx-for-python-documentation.html
+
+## Notes
+Merge with original asap
