@@ -48,3 +48,15 @@ http://gisellezeno.com/tutorials/sphinx-for-python-documentation.html
 
 ## Notes
 Merge with original asap
+
+## Pratices for apps
+ - Icons - google material
+ - REST
+ - Selectize for fields
+ - Bootstrap
+ - sphinx for documentation
+ - django structure
+ - tests - selenium
+ - Javascript
+ - generate forms and errors
+ - logins and accounts
