@@ -5,6 +5,12 @@ from .models import Greeting
 
 # Create your views here.
 def index(request):
+    """
+    Main view for hello app
+
+    :param request: Gets a request
+    :return: Returns the homepage
+    """
     # return HttpResponse('Hello from Python!')
     return render(request, 'index.html')
 
