@@ -1,5 +1,6 @@
-from core.abstract_models import BaseModel, TitleAndSlugModel
+
 from django.db import models
+from oaktree.core.abstract_models import TitleAndSlugModel, BaseModel
 
 
 class Category(TitleAndSlugModel):

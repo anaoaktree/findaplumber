@@ -40,7 +40,7 @@ def get_url_page(url, session, retries = 5):
             if response.status_code >= 500 and response.status_code < 600:
                 return get_url_page(url, session, retries-1)
             elif response.status_code >= 200 and response.status_code < 300:
-                return bs4.BeautifulSoup(response.content)
+                return bs4.BeautifulSoup(response.content, "lxml")
             else:
                 return None
         else:
