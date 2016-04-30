@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+        {% for name, email, site in objects %}
+            <h3>{{ name }}</h3>
+            <p> -><a href="mailto:{{ email }}">{{ email }}</a></p>
+            <p> -><a href="{{ site }}">{{ site }}</a></p>
+        {% endfor %}
+{% endblock %}

@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.views.generic import TemplateView
+from utils import scrape_checkatrade
 
-from .models import Greeting
 
 # Create your views here.
 def index(request):
@@ -13,6 +14,15 @@ def index(request):
     """
     # return HttpResponse('Hello from Python!')
     return render(request, 'index.html')
+
+
+class CheckATradeView(TemplateView):
+    template_name = 'plumber_list.html'
+
+    def get_context_data(self, **kwargs):
+        return {'objects': scrape_checkatrade() }
+
+
 
 
 def db(request):

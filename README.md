@@ -22,6 +22,10 @@ $ python manage.py collectstatic
 $ heroku local
 ```
 
+
+apt-get install libxml2-dev libxslt1-dev python-dev
+apt-get install python-lxml
+
 Your app should now be running on [localhost:5000](http://localhost:5000/).
 
 ## Deploying to Heroku
