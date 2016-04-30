@@ -4,9 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.db.models import OneToOneField
 from django.utils.translation import ugettext_lazy as _
-from django.db.models.signals import pre_delete, post_save, pre_save
-from django.dispatch import receiver
-import re, unicodedata
+
 from oaktree.core.abstract_models import BaseModel
 
 

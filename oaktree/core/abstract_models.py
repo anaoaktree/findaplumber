@@ -23,14 +23,6 @@ class BaseModel(models.Model):
     def __unicode__(self):
         return "%s" % self.id
 
-class PhotoModel(BaseModel):
-    submitted_by = models.ForeignKey(User)
-    caption = models.TextField(blank=True, null=True)
-    photo = FileBrowseField('Image (Initial Directory)', max_length=100, directory='uploads/')
-    is_default = models.BooleanField(default=False)
-
-    class Meta:
-        abstract = True
 
 class TitleAndSlugModel(BaseModel):
     title = models.CharField(max_length=255, db_index=True)

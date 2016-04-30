@@ -1,12 +1,4 @@
-from django.db import models
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.db.models.base import ModelBase
-from django.utils.safestring import mark_safe
-from django.template.defaultfilters import yesno, linebreaksbr, urlize
-from django.utils.formats import get_format
-from django.utils.text import capfirst
-from django.utils import dateformat
+
 from django.template.defaultfilters import slugify
 import datetime, re, logging
 
