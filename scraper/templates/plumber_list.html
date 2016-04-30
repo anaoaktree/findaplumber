@@ -2,10 +2,13 @@
 {% load staticfiles %}
 
 {% block content %}
+    <a href="{% url 'scrape_checkatrade' %}"> Scrape Plumbers</a>
+    <a href="{% url 'show_plumbers' %}"> Scrape Plumbers</a>
+
 <h1> Found plumbers performance {{ performance }}</h1>
-        {% for name, email, site in objects %}
-            <h3>{{ name }}</h3>
-            <p> -><a href="mailto:{{ email }}">{{ email }}</a></p>
-            <p> -><a href="{{ site }}">{{ site }}</a></p>
+        {% for trader in objects %}
+            <h3>{{ trader.name }}</h3>
+            <p> -><a href="mailto:{{ trader.email }}">{{ trader.email }}</a></p>
+            <p> -><a href="{{ trader.url }}">{{ trader.url }}</a></p>
         {% endfor %}
 {% endblock %}
