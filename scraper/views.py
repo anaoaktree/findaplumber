@@ -20,17 +20,7 @@ class CheckATradeView(TemplateView):
     template_name = 'plumber_list.html'
 
     def get_context_data(self, **kwargs):
-        return {'objects': scrape_checkatrade() }
+        plumbers, time = scrape_checkatrade()
 
-
-
-
-def db(request):
-
-    greeting = Greeting()
-    greeting.save()
-
-    greetings = Greeting.objects.all()
-
-    return render(request, 'db.html', {'greetings': greetings})
-
+        return {'objects': plumbers,
+                'performance': time}

@@ -2,6 +2,8 @@ import urllib2
 
 import time
 
+import itertools
+
 import bs4
 import cfscrape
 import requests, mechanize
@@ -17,16 +19,6 @@ HEADERS ={
 
 DATA = dict(location = 'London', cat=20)
 
-
-COOKIES = {'.ASPXANONYMOUS':'pJh-6RnY0QEkAAAAOWRhMGY5NmYtNTk3NC00ZTNiLWIyYWEtZTI1YTA5ODg0ZWNm7Kygg8vTHbjLkWInPO0oRc8DYH9b6nA3sRhQst_8Tic1',
-           'cf_clearance':'d7fa3b3224e2574ef10b38aa855c10901bd24b19',
-           '__cfduid':'d210d11ebab28912abff4157a6dd1a8b21461873396',
-           'LastSearch':'Lat=&Lon=&Category=20&Location=London&URL=http%3a%2f%2fwww.checkatrade.com%2fSearch%2fdefault.aspx%3flocation%3dLondon%26cat%3d20',
-           '_ga':'GA1.2.1412154492.1461873401',
-           '_dc_gtm_UA':'1'
-}
-
-
 def get_url_page(url, session, retries = 5):
     """
 
@@ -36,7 +28,6 @@ def get_url_page(url, session, retries = 5):
     try:
         if retries > 0:
             response = session.get(url)
-            # session.cookies.update(response.cookies)
             if response.status_code >= 500 and response.status_code < 600:
                 return get_url_page(url, session, retries-1)
             elif response.status_code >= 200 and response.status_code < 300:
@@ -70,22 +61,41 @@ def get_info_itemprop(tag, type, body):
 
 
 def get_trader_info(url, traders_href_list, scraper):
-    for trader_url in traders_href_list:
+    trader_url = traders_href_list.next()
+    while trader_url:
         response = get_url_page(url+trader_url, scraper).find('div',{'class': 'contact-card__details'})
         yield get_info_itemprop('h1', 'name', response), get_info_itemprop('a', 'email', response), get_info_itemprop('a', 'url', response)
+        trader_url = traders_href_list.next()
+
+SEARCH_STRING = "/Search/?postcode=NW2+3RE&adaptive=True&location=London&sort=1&page=%s&facet_Category=20"
+
+def get_all_traders_list(main_url, scraper):
+    """
+    Gets all the traders from all the pages in a search with url
+
+    :param url:
+    :param scraper:
+    :return:
+    """
+    url = main_url + SEARCH_STRING % 1
+    page_html = get_url_page(url, scraper)  # HTML for the first page
+    # total_pages = page_html.find('ul', {'class':'pagination'}).find_all('li')[-3].find('a').text  # Finds the nr of page results
+    total_pages = 3
+    for i in xrange(2, int(total_pages)):
+        yield get_trader_list(page_html)
+        url = main_url + SEARCH_STRING % i
+        page_html = get_url_page(url, scraper)
+
 
 
 def scrape_checkatrade():
     main_url = "http://www.checkatrade.com"
     url = main_url + "/Search/?location=London&cat=20"
-    # resul = download(url)
-    # with requests.Session() as sess:
-    #     sess.headers.update(HEADERS)
-    #     # session.cookies.update(cookiejar_from_dict(COOKIES))
+
     scraper = cfscrape.create_scraper()
-    page = get_url_page(url, scraper)
-    traders_list = get_trader_list(page)
-    return get_trader_info(main_url, traders_list, scraper)
+    traders_list = itertools.chain.from_iterable(get_all_traders_list(main_url, scraper))
+
+    return get_trader_info(main_url, traders_list, scraper), time.clock()
 
 
 

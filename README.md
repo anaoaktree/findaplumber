@@ -20,6 +20,7 @@ $ python manage.py migrate
 $ python manage.py collectstatic
 
 $ heroku local
+https://github.com/Anorov/cloudflare-scrape
 ```
 
 

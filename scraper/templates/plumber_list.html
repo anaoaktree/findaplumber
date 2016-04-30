@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block content %}
-
+<h1> Found plumbers performance {{ performance }}</h1>
         {% for name, email, site in objects %}
             <h3>{{ name }}</h3>
             <p> -><a href="mailto:{{ email }}">{{ email }}</a></p>
