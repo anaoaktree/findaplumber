@@ -5,10 +5,13 @@ import urllib2
 import time
 
 import itertools
+from datetime import timedelta
+from multiprocessing.dummy import Pool
 
 import bs4
 import cfscrape
 import requests, mechanize
+from pymongo import MongoClient
 from requests.cookies import cookiejar_from_dict
 from requests.packages.urllib3.connection import ConnectionError
 from scraper.models import Trader
@@ -38,6 +41,7 @@ class Scraper:
 
     def __init__(self):
         self.items = 0
+        self.pages = 0
         self.time = 0
         self.memory = 0
         self.scraper = cfscrape.create_scraper()
@@ -96,22 +100,20 @@ class CheckATradeScraper(Scraper):
             return "Not found"
 
 
-    def get_trader_info(self,url, traders_href_list, max_threads=2):
-        # trader_url = traders_href_list.next()
-        # def info_queue():
-        for trader_url in traders_href_list:
+    def get_trader_info(self,trader_url, local=False):
             # logging.debug('Starting')
-            response = self.get_url_page(url+trader_url, self.scraper).find('div',{'class': 'contact-card__details'})
+            # for trader_url in trader_list:
+            response = self.get_url_page(self.MAIN_URL+trader_url, self.scraper).find('div',{'class': 'contact-card__details'})
             trader_obj, created = Trader.objects.update_or_create(
-                name=self.get_info_itemprop('h1', 'name', response),
-                defaults={
-                    'email': self.get_info_itemprop('a', 'email', response),
-                    'url': self.get_info_itemprop('a', 'url', response)
-                    }
-            )
+                    name=self.get_info_itemprop('h1', 'name', response),
+                    defaults={
+                        'email': self.get_info_itemprop('a', 'email', response),
+                        'url': self.get_info_itemprop('a', 'url', response)
+                        }
+                )
 
 
-    def get_all_traders_list(self,main_url):
+    def get_all_traders_list(self):
         """
         Gets all the traders from all the pages in a search with url
 
@@ -119,21 +121,69 @@ class CheckATradeScraper(Scraper):
         :param scraper:
         :return:
         """
-        url = main_url + self.SEARCH_STRING % 1
+        url = self.MAIN_URL  + self.SEARCH_STRING % 1
         page_html = self.get_url_page(url)  # HTML for the first page
-        # total_pages = page_html.find('ul', {'class':'pagination'}).find_all('li')[-3].find('a').text  # Finds the nr of page results
-        total_pages = 3
-        for i in xrange(2, int(total_pages)):
+        self.total_pages = page_html.find('ul', {'class':'pagination'}).find_all('li')[-3].find('a').text  # Finds the nr of page results
+        for i in xrange(2, int(self.total_pages)):
             yield self.get_trader_list(page_html)
-            url = main_url + self.SEARCH_STRING % i
+            url = self.MAIN_URL + self.SEARCH_STRING % i
             page_html = self.get_url_page(url)
 
 
 
     def scrape_checkatrade(self):
+        init = time.time()
+        traders_list = itertools.chain.from_iterable(self.get_all_traders_list())
+        # self.get_trader_info(traders_list)
+        pool = Pool(2)
+        pool.map(self.get_trader_info, traders_list)  # TODO: check back for tests and comparisons
+        # pool = [threading.Thread(target=self.get_trader_info, args=(traders_list,)) for _ in range(10)]
+        # for t in pool:
+        #     t.daemon = True
+        #     t.start()
+        #     t.join()
+        # t = threading.Thread(target=self.get_trader_info, args=(traders_list,))
+        # t1 = threading.Thread(target=self.get_trader_info, args=(traders_list,))
+        # t.daemon = True
+        # t.start()
+        # t.join()
+        # t1.daemon = True
+        # t1.start()
+        # t1.join()
+        # self.get_trader_info(self.MAIN_URL, traders_list)
+        self.time = time.time() - init
 
-        traders_list = itertools.chain.from_iterable(self.get_all_traders_list(self.MAIN_URL))
-        self.get_trader_info(self.MAIN_URL, traders_list)
+
+class CheckATradeLocalDB:
+    def __init__(self, db_name, client=None, expires=timedelta(days=30)):
+        self.client = client if client else MongoClient('localhost', 27017)
+        # in a relational database
+        self.db = client['checkatrade']
+        self.db.plumbers.create_index('timestamp',expireAfterSeconds=expires.total_seconds())
+
+    def insert_plumber(self, name, email, url):
+        data = {
+            'name': name,
+            'email':email,
+            'url':url
+        }
+        self.db.plumbers.update({'$set': data})
+
+    def get_plumber(self, name):
+        """
+
+        :param name: plumber's name
+        :return: Returns the plumber name if it finds it in the db
+        """
+        result = self.db.plumbers.find_one({'name': name})
+        if result:
+            return result['name']
+        else:
+            return "Not found"
+
+
+
+
 
 
 

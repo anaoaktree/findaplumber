@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, View
 from scraper.models import Trader
 
@@ -28,9 +28,11 @@ class CheckATradeView(TemplateView):
         return ctx
 
 
-class ScrapeCheckATradeView(CheckATradeView):
+class ScrapeCheckATradeView(View):
 
-    def get_context_data(self, **kwargs):
-        CheckATradeScraper()  # Scrapes the website
-        super(self, ScrapeCheckATradeView).get_context_data( **kwargs)
+    def get(self, *args,**kwargs):
+        sc = CheckATradeScraper()
+        sc.scrape_checkatrade()  # Scrapes the website
+        print "Scraped %s pages in  %s seconds" % (sc.pages, sc.time)
+        return redirect('show_plumbers')
 
