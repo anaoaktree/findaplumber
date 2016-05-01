@@ -1,6 +1,5 @@
 {
-  "name": "Python on Heroku example",
-  "description": "A barebones Python app, which can easily be deployed to Heroku.",
   "engines": {
-    "node": "4.0.0" }
+    "node": "4.0.0"
+  }
 }
