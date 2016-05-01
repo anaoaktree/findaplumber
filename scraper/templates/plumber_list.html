@@ -1,14 +1,17 @@
 {% extends "base.html" %}
-{% load staticfiles %}
+{% load staticfiles humanize %}
 
 {% block content %}
     <section class="row">
-        <h1> Found plumbers performance {{ performance }}</h1>
+        <h1> Found plumbers in London</h1>
         {% for trader in objects %}
             <article class="col-sm-6 col-md-4">
-                <h3>{{ trader.name }} <span> Last updated: {{ trader.updated }}</span></h3>
-                <p> -><a href="mailto:{{ trader.email }}">{{ trader.email }}</a></p>
-                <p> -><a href="{{ trader.url }}">{{ trader.url }}</a></p>
+                <h3>{{ trader.name }}</h3>
+                <span> Last updated: {{ trader.updated|naturaltime }}</span>
+                <ul>
+                    <li><a href="mailto:{{ trader.email }}">{{ trader.email }}</a></li>
+                    <li><a href="{{ trader.url }}">{{ trader.url }}</a></li>
+                </ul>
             </article>
         {% endfor %}
     </section>

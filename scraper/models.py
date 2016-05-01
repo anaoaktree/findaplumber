@@ -1,11 +1,23 @@
 import logging
 
 from django.db import models
-from oaktree.core.abstract_models import TitleAndSlugModel, BaseModel
 from scraper.utils import CheckATradeScraper
 
 
-class Category(TitleAndSlugModel):
+
+class BaseModel(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+    def __unicode__(self):
+        return "%s" % self.id
+
+
+class Category(BaseModel):
+    name = models.CharField(max_length=255)
     ref = models.IntegerField(default=20)
 
 
