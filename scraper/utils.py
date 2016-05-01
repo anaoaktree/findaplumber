@@ -10,6 +10,7 @@ from multiprocessing.dummy import Pool
 
 import bs4
 import cfscrape
+import pymongo
 from pymongo import MongoClient
 
 
@@ -76,7 +77,7 @@ class CheckATradeScraper(Scraper):
     SEARCH_STRING = "/Search/?postcode=NW2+3RE&adaptive=True&location=London&sort=1&page=%s&facet_Category=20"
 
 
-    def get_trader_list(self,html_page):
+    def get_trader_list(self, html_page):
         """
 
         :param html_page: beautiful soup html page
@@ -144,7 +145,7 @@ class CheckATradeLocalDB:
         self.client = client if client else MongoClient('localhost', 27017)
         # in a relational database
         self.db = self.client['checkatrade']
-        self.db.plumbers.create_index('timestamp',expireAfterSeconds=expires.total_seconds())
+        self.db.plumbers.create_index([("name", pymongo.DESCENDING)], background=True)
 
     def insert_plumber(self, name, email, url):
         data = {
@@ -153,6 +154,7 @@ class CheckATradeLocalDB:
             'url':url
         }
         self.db.plumbers.update({'name': name},{ '$set': data})
+
 
     def get_plumber(self, name):
         """
@@ -165,6 +167,10 @@ class CheckATradeLocalDB:
             return result['name']
         else:
             return "Not found"
+
+    def get_all_plumbers(self):
+        for plumber in self.db.plumbers.find({}):
+            yield plumber.name, plumber.email
 
 
 

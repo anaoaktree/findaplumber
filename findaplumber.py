@@ -26,16 +26,21 @@ class CheckATradeLocalScraper(CheckATradeScraper):
         t.start()
         t.join()
 
-
-if __name__=='__main__':
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Scrape plumber information')
+    parser.add_argument('-u', '--update', dest='update', action='store_true', help='Scrapes the site and updates the local db')
+    parser.add_argument('-s', '--show', dest='show', action='store_true', help='Prints the current db records')
+    parser.add_argument('-csv', '--to-csv', dest='csv', action='store_true', help='Saves the information to a csv file')  # TODO dawnload to csv
+    args = parser.parse_args()
     db = CheckATradeLocalDB()
-    sc = CheckATradeLocalScraper()
-    sc(db)
+    if args.update:
+        sc = CheckATradeLocalScraper()
+        sc(db)
+    for pl in db.get_all_plumbers():  # TODO: FIX MONGO DB
+        print pl
+    print db.get_plumber("GL Service & Installation")
 
 
-
-
-# Create a script to scrape the plumbers info, with option to save to db or dawnload to csv
-# Add timestamp to mongo db lib and one more useful field from checkatrade
-# Write tests
-# Track preformance
+    # Add timestamp to mongo db lib and one more useful field from checkatrade
+    # Write tests
+    # Track preformance
