@@ -10,11 +10,8 @@ from multiprocessing.dummy import Pool
 
 import bs4
 import cfscrape
-import requests, mechanize
 from pymongo import MongoClient
-from requests.cookies import cookiejar_from_dict
-from requests.packages.urllib3.connection import ConnectionError
-from scraper.models import Trader
+
 
 chrome_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36'
 
@@ -23,9 +20,9 @@ HEADERS ={
 
 }
 
-# logging.basicConfig(level=logging.DEBUG,
-#                     format='[%(levelname)s] (%(threadName)-10s) %(message)s',
-#                     )
+logging.basicConfig(level=logging.DEBUG,
+                    format='[%(levelname)s] (%(threadName)-10s) %(message)s',
+                    )
 
 PROXIES = {'http': '88.210.158.189:87',
            'https': '46.231.117.154:90'
@@ -100,17 +97,6 @@ class CheckATradeScraper(Scraper):
             return "Not found"
 
 
-    def get_trader_info(self,trader_url, local=False):
-            # logging.debug('Starting')
-            # for trader_url in trader_list:
-            response = self.get_url_page(self.MAIN_URL+trader_url, self.scraper).find('div',{'class': 'contact-card__details'})
-            trader_obj, created = Trader.objects.update_or_create(
-                    name=self.get_info_itemprop('h1', 'name', response),
-                    defaults={
-                        'email': self.get_info_itemprop('a', 'email', response),
-                        'url': self.get_info_itemprop('a', 'url', response)
-                        }
-                )
 
 
     def get_all_traders_list(self):
@@ -123,15 +109,13 @@ class CheckATradeScraper(Scraper):
         """
         url = self.MAIN_URL  + self.SEARCH_STRING % 1
         page_html = self.get_url_page(url)  # HTML for the first page
-        self.pages = page_html.find('ul', {'class':'pagination'}).find_all('li')[-3].find('a').text  # Finds the nr of page results
+        self.pages = page_html.find('ul', {'class': 'pagination'}).find_all('li')[-3].find('a').text  # Finds the nr of page results
         for i in xrange(2, int(self.pages)):
             yield self.get_trader_list(page_html)
             url = self.MAIN_URL + self.SEARCH_STRING % i
             page_html = self.get_url_page(url)
 
-
-
-    def scrape_checkatrade(self):
+    def __call__(self):
         init = time.time()
         traders_list = itertools.chain.from_iterable(self.get_all_traders_list())
         # self.get_trader_info(traders_list)
@@ -142,6 +126,7 @@ class CheckATradeScraper(Scraper):
         #      t.daemon = True
         #      t.start()
         #      t.join()
+
         t = threading.Thread(target=map, args=(self.get_trader_info, traders_list))
         # t1 = threading.Thread(target=self.get_trader_info, args=(traders_list,))
         t.daemon = True
@@ -155,10 +140,10 @@ class CheckATradeScraper(Scraper):
 
 
 class CheckATradeLocalDB:
-    def __init__(self, db_name, client=None, expires=timedelta(days=30)):
+    def __init__(self, client=None, expires=timedelta(days=30)):
         self.client = client if client else MongoClient('localhost', 27017)
         # in a relational database
-        self.db = client['checkatrade']
+        self.db = self.client['checkatrade']
         self.db.plumbers.create_index('timestamp',expireAfterSeconds=expires.total_seconds())
 
     def insert_plumber(self, name, email, url):
@@ -167,7 +152,7 @@ class CheckATradeLocalDB:
             'email':email,
             'url':url
         }
-        self.db.plumbers.update({'$set': data})
+        self.db.plumbers.update({'name': name},{ '$set': data})
 
     def get_plumber(self, name):
         """

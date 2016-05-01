@@ -2,10 +2,14 @@
 {% load staticfiles %}
 
 {% block content %}
-<h1> Found plumbers performance {{ performance }}</h1>
+    <section class="row">
+        <h1> Found plumbers performance {{ performance }}</h1>
         {% for trader in objects %}
-            <h3>{{ trader.name }} <span> Last updated: {{ trader.updated }}</span></h3>
-            <p> -><a href="mailto:{{ trader.email }}">{{ trader.email }}</a></p>
-            <p> -><a href="{{ trader.url }}">{{ trader.url }}</a></p>
+            <article class="col-sm-6 col-md-4">
+                <h3>{{ trader.name }} <span> Last updated: {{ trader.updated }}</span></h3>
+                <p> -><a href="mailto:{{ trader.email }}">{{ trader.email }}</a></p>
+                <p> -><a href="{{ trader.url }}">{{ trader.url }}</a></p>
+            </article>
         {% endfor %}
+    </section>
 {% endblock %}
