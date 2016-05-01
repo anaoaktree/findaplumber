@@ -123,8 +123,8 @@ class CheckATradeScraper(Scraper):
         """
         url = self.MAIN_URL  + self.SEARCH_STRING % 1
         page_html = self.get_url_page(url)  # HTML for the first page
-        self.total_pages = page_html.find('ul', {'class':'pagination'}).find_all('li')[-3].find('a').text  # Finds the nr of page results
-        for i in xrange(2, int(self.total_pages)):
+        self.pages = page_html.find('ul', {'class':'pagination'}).find_all('li')[-3].find('a').text  # Finds the nr of page results
+        for i in xrange(2, int(self.pages)):
             yield self.get_trader_list(page_html)
             url = self.MAIN_URL + self.SEARCH_STRING % i
             page_html = self.get_url_page(url)
@@ -135,17 +135,17 @@ class CheckATradeScraper(Scraper):
         init = time.time()
         traders_list = itertools.chain.from_iterable(self.get_all_traders_list())
         # self.get_trader_info(traders_list)
-        pool = Pool(2)
-        pool.map(self.get_trader_info, traders_list)  # TODO: check back for tests and comparisons
+        # pool = Pool(2)
+        # pool.map(self.get_trader_info, traders_list)  # TODO: check back for tests and comparisons
         # pool = [threading.Thread(target=self.get_trader_info, args=(traders_list,)) for _ in range(10)]
         # for t in pool:
-        #     t.daemon = True
-        #     t.start()
-        #     t.join()
-        # t = threading.Thread(target=self.get_trader_info, args=(traders_list,))
+        #      t.daemon = True
+        #      t.start()
+        #      t.join()
+        t = threading.Thread(target=map, args=(self.get_trader_info, traders_list))
         # t1 = threading.Thread(target=self.get_trader_info, args=(traders_list,))
-        # t.daemon = True
-        # t.start()
+        t.daemon = True
+        t.start()
         # t.join()
         # t1.daemon = True
         # t1.start()
