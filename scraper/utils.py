@@ -19,9 +19,11 @@ HEADERS ={  # Add more user agents and use a random function to get them
     'User-Agent': chrome_agent,
 }
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='[%(levelname)s] (%(threadName)-10s) %(message)s',
-                    )
+# Uncomment for thread tracking
+
+# logging.basicConfig(level=logging.DEBUG,
+#                     format='[%(levelname)s] (%(threadName)-10s) %(message)s',
+#                     )
 
 PROXIES = {'http': '88.210.158.189:87',  # These ones are blocked
            'https': '46.231.117.154:90'
@@ -120,7 +122,7 @@ class CheckATradeScraper(Scraper):
             page_html = self.get_url_page(url)
 
     def get_trader_info(self,trader_url, local=False, db=None):
-            logging.debug('Starting')
+            # logging.debug('Starting')
             # for trader_url in trader_list:
             html_page = self.get_url_page(self.MAIN_URL+trader_url, self.scraper)
             contacts = html_page.find('div',{'class': 'contact-card__details'})
