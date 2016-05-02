@@ -1,75 +1,63 @@
-# python-getting-started
+# findaplumner
 
-A barebones Python app, which can easily be deployed to Heroku.
+Find a plumber in London. Update the search anytime you want.
 
-This application supports the [Getting Started with Python on Heroku](https://devcenter.heroku.com/articles/getting-started-with-python) article - check it out.
+You can run it as a Django app or as a standalone script. See info below.
 
-## Running Locally
+## Instalation
+*This instructions assumes you have a basic python environment setup on your machine*
+*Some uncommon packages you'll need: apt-get install libxml2-dev libxslt1-dev python-dev python-lxml*
 
-Make sure you have Python [installed properly](http://install.python-guide.org).  Also, install the [Heroku Toolbelt](https://toolbelt.heroku.com/) and [Postgres](https://devcenter.heroku.com/articles/heroku-postgresql#local-setup).
+The first step is to create a virtualenv and install the requirements
 
 ```sh
-$ git clone git@github.com:heroku/python-getting-started.git
-$ cd python-getting-started
-
+$ cd path/to/proj
+$ virtualenv env
+$ source env/bin/activate
 $ pip install -r requirements.txt
-
-$ createdb python_getting_started
-
-$ python manage.py migrate
-$ python manage.py collectstatic
-
-$ heroku local
-https://github.com/Anorov/cloudflare-scrape
 ```
 
+## As a Django app
+This Django app in hosted on Heroku and you can visit [here](http://findaplumber.herokuapp.com).
 
-apt-get install libxml2-dev libxslt1-dev python-dev
-apt-get install python-lxml
-
-Your app should now be running on [localhost:5000](http://localhost:5000/).
-
-## Deploying to Heroku
-
+To run locally, you can write
 ```sh
-$ heroku create
-$ git push heroku master
+$ python manage.py runserver
+```
+Make sure you have the virtualenv activated and the proper database settings in the local_settings.py file. This example uses Posgres, so you need that installed on your computer and a database named findaplumber.
 
-$ heroku run python manage.py migrate
+To create your own Heroku app, make sure you have an Heroku account and the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed. 
+```sh
+$ cd path/to/proj
+$ heroku login
+$ heroku create appname
+$ git push heroku master
 $ heroku open
 ```
-or
+You will also need to setup [Postgres](https://devcenter.heroku.com/articles/heroku-postgresql). On heroku. 
+You can also use the basic sqlite3 that is easier to configure.
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+## Standalone script
 
-## Documentation
+To get the plumber's information as a simple script, you'll need to setup the virtualenv (always recommended), the findaplumber.py file and the scraper/utils.py file. (Beware of the correct way to import classes if you copy the file to a different path).
 
-For more information about using Python on Heroku, see these Dev Center articles:
+To show the information
 
-- [Python on Heroku](https://devcenter.heroku.com/categories/python)
+```sh
+$ cd path/to/proj
+$ python findaplumner.py
+```
+To update the information
+```sh
+$ cd path/to/proj
+$ python findaplumner.py --update
+```
+To save the information to a csv file
+```sh
+$ cd path/to/proj
+$ python findaplumner.py --csv
+```
 
-## Instruction on Sphinx
-http://gisellezeno.com/tutorials/sphinx-for-python-documentation.html
+https://github.com/Anorov/cloudflare-scrape
 
-## Notes
-Merge with original asap
 
-## Pratices for apps
- - Icons - google material
- - REST
- - Selectize for fields
- - Bootstrap
- - sphinx for documentation
- - django structure
- - tests - selenium
- - Javascript
- - generate forms and errors
- - logins and accounts
-
-## Tools
-- Sphinx
-- Travis
-
-## TODO
- - Testing
- - Bootstrap and basic js libs, seo, icons, mixpanel, etc
