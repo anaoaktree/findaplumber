@@ -111,7 +111,7 @@ class CheckATradeScraper(Scraper):
         The total number of pages is determined on the first page by reading the nr of pages from pagination
 
         """
-        url = self.MAIN_URL  + self.SEARCH_STRING % 1
+        url = self.MAIN_URL + self.SEARCH_STRING % 1
         page_html = self.get_url_page(url)  # HTML for the first page
         self.pages = page_html.find('ul', {'class': 'pagination'}).find_all('li')[-3].find('a').text  # Finds the nr of page results
         for i in xrange(2, int(self.pages)):

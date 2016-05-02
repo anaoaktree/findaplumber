@@ -2,7 +2,6 @@ import logging
 from random import randint, random
 
 from django.db import models
-from scraper.utils import CheckATradeScraper
 
 
 class BaseModel(models.Model):
@@ -23,7 +22,7 @@ class Scraper(BaseModel):
     results_page = models.TextField(blank=True, null=True)
 
     # def run(self):  # When the nr of sites should grow, apply a scalable way of doing this
-    #     sc = DjangoCheckATradeScraper()
+    #     sc = CheckATradeScraper()
     #     sc()
 
 
