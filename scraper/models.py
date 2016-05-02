@@ -28,6 +28,10 @@ class Trader(BaseModel):
     url = models.URLField(help_text="Trader's url")
     category = models.ForeignKey(Category, related_name="traders", blank=True, null=True)
 
+
+    class Meta:
+        ordering = ['-updated']
+
     def __unicode__(self):
         return self.name
 
