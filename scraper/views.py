@@ -1,3 +1,5 @@
+import time
+
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, View
 from scraper.models import Trader, DjangoCheckATradeScraper
@@ -32,6 +34,6 @@ class ScrapeCheckATradeView(View):
     def get(self, *args,**kwargs):
         sc = DjangoCheckATradeScraper()
         sc()  # Scrapes the website
-        print "Scraped %s pages in  %s seconds" % (sc.pages, sc.time)
+        time.sleep(10)
         return redirect('show_plumbers')
 
