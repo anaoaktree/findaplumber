@@ -129,7 +129,7 @@ class CheckATradeScraper(Scraper):
             url = self.get_info_itemprop('a', 'url', contacts)
             # if random() > 0.2:  # It only saves for some random pages to save memory
             #     html_page = ""
-            trader_obj, created = Trader.objects.get_or_create(
+            trader_obj, created = Trader.objects.update_or_create(
                         name=name,
                         defaults={
                             'email': email,
