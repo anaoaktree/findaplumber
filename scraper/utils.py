@@ -14,22 +14,21 @@ import pymongo
 from pymongo import MongoClient
 
 
+
 chrome_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36'
-
-HEADERS ={
+HEADERS ={  # Add more user agents and use a random function to get them
     'User-Agent': chrome_agent,
-
 }
 
 logging.basicConfig(level=logging.DEBUG,
                     format='[%(levelname)s] (%(threadName)-10s) %(message)s',
                     )
 
-PROXIES = {'http': '88.210.158.189:87',
+PROXIES = {'http': '88.210.158.189:87',  # These ones are blocked
            'https': '46.231.117.154:90'
            }
 
-DATA = dict(location = 'London', cat=20)
+DATA = dict(location='London', cat=20)
 
 
 class Scraper:
@@ -67,7 +66,7 @@ class Scraper:
             else:
                 return None
         except Exception, e:
-            print "Something went wrong. %s" %e
+            print "Something went wrong. %s" % e
             return None
 
 
@@ -88,7 +87,17 @@ class CheckATradeScraper(Scraper):
             yield result.h2.a.get('href')
 
 
-    def get_info_itemprop(self,tag, _type, body):
+    def get_info_itemprop(self, tag, _type, body):
+        """
+        Gets the information based on the itemprop of the tag.
+        It assumes that all the fields have the correct item prop.
+
+
+        :param tag: the html tag to parse
+        :param _type: the type of the information
+        :param body: the body of the code
+        :return: the text or 'Not found'
+        """
         try:
             info = body.find(tag, {'itemprop': _type})
             if _type == 'url':
@@ -102,11 +111,9 @@ class CheckATradeScraper(Scraper):
 
     def get_all_traders_list(self):
         """
-        Gets all the traders from all the pages in a search with url
+        Gets all the traders from all the pages in a search with url.
+        The total number of pages is determined on the first page by reading the nr of pages from pagination
 
-        :param url:
-        :param scraper:
-        :return:
         """
         url = self.MAIN_URL  + self.SEARCH_STRING % 1
         page_html = self.get_url_page(url)  # HTML for the first page
@@ -117,43 +124,42 @@ class CheckATradeScraper(Scraper):
             page_html = self.get_url_page(url)
 
     def __call__(self):
+        """
+        Triggers the scrapper.
+
+        """
         init = time.time()
         traders_list = itertools.chain.from_iterable(self.get_all_traders_list())
-        # self.get_trader_info(traders_list)
         # pool = Pool(2)
         # pool.map(self.get_trader_info, traders_list)  # TODO: check back for tests and comparisons
-        # pool = [threading.Thread(target=self.get_trader_info, args=(traders_list,)) for _ in range(10)]
-        # for t in pool:
-        #      t.daemon = True
-        #      t.start()
-        #      t.join()
 
+        # A thread is in use here so the request can end without timeout. A sleep function should be used to avoid overusing the server
         t = threading.Thread(target=map, args=(self.get_trader_info, traders_list))
         # t1 = threading.Thread(target=self.get_trader_info, args=(traders_list,))
         t.daemon = True
         t.start()
         # t.join()
-        # t1.daemon = True
-        # t1.start()
-        # t1.join()
-        # self.get_trader_info(self.MAIN_URL, traders_list)
         self.time = time.time() - init
 
 
 class CheckATradeLocalDB:
+    """
+    MongoDB to connect locally
+
+
+    """
     def __init__(self, client=None, expires=timedelta(days=30)):
         self.client = client if client else MongoClient('localhost', 27017)
-        # in a relational database
         self.db = self.client['checkatrade']
         self.db.plumbers.create_index([("name", pymongo.DESCENDING)], background=True)
 
     def insert_plumber(self, name, email, url):
         data = {
             'name': name,
-            'email':email,
-            'url':url
+            'email': email,
+            'url': url
         }
-        self.db.plumbers.update({'name': name},{ '$set': data})
+        self.db.plumbers.update({'name': name}, { '$set': data})
 
 
     def get_plumber(self, name):
