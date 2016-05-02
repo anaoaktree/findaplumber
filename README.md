@@ -55,7 +55,6 @@ $ cd path/to/proj
 $ python findaplumner.py --update
 ```
 
-
 ## Next steps
 * Connect the Scraper to the db to save performance data and stats on each service scraped;
 * Improve the tests by randomly saving html pages when scraping and then test over the saved ones;
