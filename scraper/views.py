@@ -1,8 +1,9 @@
 import time
 
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.views.generic import TemplateView, View
-from scraper.models import Trader, DjangoCheckATradeScraper
+from scraper.models import Trader
+from scraper.utils import CheckATradeScraper
 
 
 def index(request):
@@ -31,8 +32,8 @@ class CheckATradeView(TemplateView):
 
 class ScrapeCheckATradeView(View):
 
-    def get(self, *args,**kwargs):
-        sc = DjangoCheckATradeScraper()
+    def get(self, *args, **kwargs):
+        sc = CheckATradeScraper()
         sc()  # Scrapes the website
         time.sleep(10)  # Allows time to refresh the page
         return redirect('show_plumbers')

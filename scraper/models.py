@@ -5,7 +5,6 @@ from django.db import models
 from scraper.utils import CheckATradeScraper
 
 
-
 class BaseModel(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -15,10 +14,17 @@ class BaseModel(models.Model):
 
     def __unicode__(self):
         return "%s" % self.id
+
+
 class Scraper(BaseModel):
     ref = models.CharField(max_length=255, default="checkatrade")
+    main_url = models.URLField()
+    search_string = models.CharField(max_length=255)
     results_page = models.TextField(blank=True, null=True)
 
+    # def run(self):  # When the nr of sites should grow, apply a scalable way of doing this
+    #     sc = DjangoCheckATradeScraper()
+    #     sc()
 
 
 class Category(BaseModel):
@@ -42,29 +48,3 @@ class Trader(BaseModel):
 
     def __unicode__(self):
         return self.name
-
-
-
-class DjangoCheckATradeScraper(CheckATradeScraper):
-    def get_trader_info(self,trader_url, local=False, db=None):
-            logging.debug('Starting')
-            # for trader_url in trader_list:
-            html_page = self.get_url_page(self.MAIN_URL+trader_url, self.scraper)
-            contacts = html_page.find('div',{'class': 'contact-card__details'})
-            name = self.get_info_itemprop('h1', 'name', contacts)
-            email = self.get_info_itemprop('a', 'email', contacts)
-            url = self.get_info_itemprop('a', 'url', contacts)
-            # if random() > 0.2:  # It only saves for some random pages to save memory
-            #     html_page = ""
-            trader_obj, created = Trader.objects.get_or_create(
-                        name=name,
-                        defaults={
-                            'email': email,
-                            'url': url,
-                            'checkatrade_url': self.MAIN_URL+trader_url
-                            # 'page': str(html_page),
-                            }
-                    )
-
-
-

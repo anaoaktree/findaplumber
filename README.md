@@ -39,21 +39,6 @@ $ heroku open
 You will also need to setup [Postgres](https://devcenter.heroku.com/articles/heroku-postgresql). On heroku. 
 You can also use the basic sqlite3 that is easier to configure.
 
-## Standalone script
-
-To get the plumber's information as a simple script, you'll need to setup the virtualenv (always recommended), the findaplumber.py file and the scraper/utils.py file. (Beware of the correct way to import classes if you copy the file to a different path).
-
-To show the information
-
-```sh
-$ cd path/to/proj
-$ python findaplumner.py
-```
-To update the information
-```sh
-$ cd path/to/proj
-$ python findaplumner.py --update
-```
 
 ## Next steps
 * Connect the Scraper to the db to save performance data and stats on each service scraped;

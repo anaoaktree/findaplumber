@@ -12,8 +12,7 @@ import bs4
 import cfscrape
 import pymongo
 from pymongo import MongoClient
-
-
+from scraper.models import Trader
 
 chrome_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36'
 HEADERS ={  # Add more user agents and use a random function to get them
@@ -106,9 +105,6 @@ class CheckATradeScraper(Scraper):
         except:
             return "Not found"
 
-
-
-
     def get_all_traders_list(self):
         """
         Gets all the traders from all the pages in a search with url.
@@ -122,6 +118,26 @@ class CheckATradeScraper(Scraper):
             yield self.get_trader_list(page_html)
             url = self.MAIN_URL + self.SEARCH_STRING % i
             page_html = self.get_url_page(url)
+
+    def get_trader_info(self,trader_url, local=False, db=None):
+            logging.debug('Starting')
+            # for trader_url in trader_list:
+            html_page = self.get_url_page(self.MAIN_URL+trader_url, self.scraper)
+            contacts = html_page.find('div',{'class': 'contact-card__details'})
+            name = self.get_info_itemprop('h1', 'name', contacts)
+            email = self.get_info_itemprop('a', 'email', contacts)
+            url = self.get_info_itemprop('a', 'url', contacts)
+            # if random() > 0.2:  # It only saves for some random pages to save memory
+            #     html_page = ""
+            trader_obj, created = Trader.objects.get_or_create(
+                        name=name,
+                        defaults={
+                            'email': email,
+                            'url': url,
+                            'checkatrade_url': self.MAIN_URL+trader_url
+                            # 'page': str(html_page),
+                            }
+                    )
 
     def __call__(self):
         """
