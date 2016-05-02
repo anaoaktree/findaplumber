@@ -51,7 +51,6 @@ You will also need to setup [Postgres](https://devcenter.heroku.com/articles/her
 * Improve the tests by randomly saving html pages when scraping and then test over the saved ones;
 * Retrieve more data from each trader;
 * Analyse the data retrived from each trader and use graphs and stats to draw insights.
-
-https://github.com/Anorov/cloudflare-scrape
+* Make the frontend pretty!
 
 
