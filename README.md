@@ -17,6 +17,8 @@ $ source env/bin/activate
 $ pip install -r requirements.txt
 ```
 
+If you have any trouble with this, please let me know!
+
 ## As a Django app
 This Django app in hosted on Heroku and you can visit [here](http://findaplumber.herokuapp.com).
 
@@ -52,16 +54,13 @@ To update the information
 $ cd path/to/proj
 $ python findaplumner.py --update
 ```
-To save the information to a csv file
-```sh
-$ cd path/to/proj
-$ python findaplumner.py --csv
-```
+
 
 ## Next steps
-* Connect the Scraper to the db to save performance data and stats on each service scraped.
-* Improve the tests by randomly saving html pages when scraping and then test over the saved ones.
-* Retrieve more data from each trader
+* Connect the Scraper to the db to save performance data and stats on each service scraped;
+* Improve the tests by randomly saving html pages when scraping and then test over the saved ones;
+* Retrieve more data from each trader;
+* Analyse the data retrived from each trader and use graphs and stats to draw insights.
 
 https://github.com/Anorov/cloudflare-scrape
 
