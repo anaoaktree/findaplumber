@@ -14,7 +14,7 @@ def index(request):
     :return: Returns the homepage
     """
     # return HttpResponse('Hello from Python!')
-    return render(request, 'index.html')
+    return redirect('show_plumbers')
 
 
 class CheckATradeView(TemplateView):

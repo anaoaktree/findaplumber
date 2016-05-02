@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% load staticfiles humanize %}
-
 {% block content %}
     <section class="row">
-        <h1> Found plumbers in London</h1>
+        <h1> Plumbers in London <a href="{% url 'scrape_checkatrade'%}">> update</a></h1>
         {% for trader in objects %}
             <article class="col-sm-6 col-md-4">
                 <h3>{{ trader.name }}</h3>
@@ -14,6 +13,9 @@
                     <li><a href="{{ trader.checkatrade_url }}">{{ trader.checkatrade_url }}</a></li>
                 </ul>
             </article>
+        {% empty %}
+            <p> No plumbers found. </p>
         {% endfor %}
+
     </section>
 {% endblock %}
