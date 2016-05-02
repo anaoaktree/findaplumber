@@ -2,7 +2,6 @@
 
 Find a plumber in London. Update the search anytime you want.
 
-You can run it as a Django app or as a standalone script. See info below.
 
 ## Instalation
 *This instructions assumes you have a basic python environment setup on your machine*
@@ -24,12 +23,16 @@ This Django app in hosted on Heroku and you can visit [here](http://findaplumber
 Note that the update link scrapes the website for updated data. To prevent Heroku from timing out, 
 a thread was created and 10 second sleep was added. To view all the scraped traders, refresh the page a few seconds after.
 
-
 To run locally, you can write
 ```sh
 $ python manage.py runserver
 ```
-Make sure you have the virtualenv activated and the proper database settings in the local_settings.py file. This example uses Posgres, so you need that installed on your computer and a database named findaplumber.
+Make sure you have the virtualenv activated and the proper database settings in the local_settings.py file. This example uses Postgres, so you need that installed on your computer and a database named findaplumber.
+
+If the purpose is only to scrape the data, you can run the following management command:
+```sh
+$ python manage.py update_plumbers
+```
 
 To create your own Heroku app, make sure you have an Heroku account and the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed. 
 ```sh
