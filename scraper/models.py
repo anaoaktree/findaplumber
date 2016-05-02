@@ -24,7 +24,8 @@ class Category(BaseModel):
 class Trader(BaseModel):
     name = models.CharField(max_length=255)
     email = models.EmailField()
-    url = models.URLField()
+    checkatrade_url = models.URLField(help_text="Trader's location on checkatrade", default="")
+    url = models.URLField(help_text="Trader's url")
     category = models.ForeignKey(Category, related_name="traders", blank=True, null=True)
 
     def __unicode__(self):
@@ -47,7 +48,8 @@ class DjangoCheckATradeScraper(CheckATradeScraper):
                         name=name,
                         defaults={
                             'email': email,
-                            'url': url
+                            'url': url,
+                            'checkatrade_url': self.MAIN_URL+trader_url
                             }
                     )
 
