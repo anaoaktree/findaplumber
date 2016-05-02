@@ -21,6 +21,9 @@ If you have any trouble with this, please let me know!
 
 ## As a Django app
 This Django app in hosted on Heroku and you can visit [here](http://findaplumber.herokuapp.com).
+Note that the update link scrapes the website for updated data. To prevent Heroku from timing out, 
+a thread was created and 10 second sleep was added. To view all the scraped traders, refresh the page a few seconds after.
+
 
 To run locally, you can write
 ```sh
