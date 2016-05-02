@@ -36,8 +36,8 @@ $ heroku create appname
 $ git push heroku master
 $ heroku open
 ```
-You will also need to setup [Postgres](https://devcenter.heroku.com/articles/heroku-postgresql). On heroku. 
-You can also use the basic sqlite3 that is easier to configure.
+You will also need to setup [Postgres](https://devcenter.heroku.com/articles/heroku-postgresql).
+
 
 
 ## Next steps
