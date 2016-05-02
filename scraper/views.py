@@ -4,9 +4,6 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, View
 from scraper.models import Trader, DjangoCheckATradeScraper
 
-# Create your views here.
-from scraper.utils import CheckATradeScraper
-
 
 def index(request):
     """
@@ -20,6 +17,9 @@ def index(request):
 
 
 class CheckATradeView(TemplateView):
+    """
+    Returns the list of all the current Plumbers
+    """
     template_name = 'plumber_list.html'
 
     def get_context_data(self, **kwargs):
@@ -34,6 +34,6 @@ class ScrapeCheckATradeView(View):
     def get(self, *args,**kwargs):
         sc = DjangoCheckATradeScraper()
         sc()  # Scrapes the website
-        time.sleep(10)
+        time.sleep(10)  # Allows time to refresh the page
         return redirect('show_plumbers')
 
