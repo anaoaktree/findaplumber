@@ -32,11 +32,18 @@ class CheckATradeParserTest(TestCase):
 
         """
         url = self.refs_list[random.randint(0, len(self.refs_list)-1)]
-        test_page = self.scraper.get_url_page(url)
+        test_page = self.scraper.get_url_page(url)  # exchange this for a copy of an html file
 
         url_info = self.scraper.get_info_itemprop('a', 'url', test_page)
         self.assertTrue(re.search(r'^http://www.', url_info) or url_info == "Not found")
 
         email_info = self.scraper.get_info_itemprop('a', 'email', test_page)
         self.assertTrue(re.search(r'^\S+@\S+', email_info) or email_info == "Not found")
+
+    def test_scraping_all_traders(self):
+        """
+        Checks if the scraper gets all the scrapers by comparing the total results on the site with the total pages scraped
+
+        """
+        pass
 
